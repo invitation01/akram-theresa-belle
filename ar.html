@@ -40,6 +40,15 @@ var isCoverPhoto=false;
 <script src="assets/event_9hCD.js"></script>
 
 <style>
+  .confirmation-note{
+    text-align:center;
+    color:#7e7369;
+    font-family:"Cormorant Garamond", serif;
+    font-size:18px;
+    line-height:1.5;
+    margin:20px auto;
+    padding:0 20px;
+}
   .footer-cross{
     text-align:center;
     color:#000000;
@@ -589,10 +598,11 @@ body.ct_article,
             </h1>
 
             <div class="slide-content">
+              <div class="confirmation-note">
+                  يرجى تأكيد حضوركم قبل 1 تشرين الأول 2026.
+              </div>
 
               <div class="form-intro-wrapper">
-                يرجى تأكيد حضوركم
-
                 <dd class="npersons_cont npLabel_visible">
                   عدد الأشخاص:
                   <span id="inviteGuestCount">1</span>
@@ -836,22 +846,22 @@ document.addEventListener("DOMContentLoaded",function(){
         return;
       }
 
-      let text="Wedding RSVP - Akram & Theresa-Belle\\n\\n";
-      text+="الاسم: "+guestName+"\\n";
+      let text="Wedding RSVP - Akram & Theresa-Belle";
+      text+="الاسم: "+guestName;
 
       if(attendance==="1"){
-        text+="الحضور: نعم\\n";
-        text+="عدد الحاضرين: "+persons+"\\n";
+        text+="الحضور: نعم";
+        text+="عدد الحاضرين: "+persons;
       }else{
-        text+="الحضور: لن أتمكن من الحضور\\n";
+        text+="الحضور: لن أتمكن من الحضور";
       }
 
       if(msg){
-        text+="\\nالرسالة: "+msg;
+        text+="الرسالة: "+msg;
       }
 
       const whatsapp=
-        "https://wa.me/96171061377?text="+encodeURIComponent(text);
+        "https://wa.me/96181793399?text="+encodeURIComponent(text);
 
       window.open(whatsapp,"_blank");
     });

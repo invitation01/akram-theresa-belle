@@ -40,6 +40,15 @@ var isCoverPhoto=false;
 <script src="assets/event_9hCD.js"></script>
 
 <style>
+  .confirmation-note{
+    text-align:center;
+    color:#7e7369;
+    font-family:"Cormorant Garamond", serif;
+    font-size:18px;
+    line-height:1.5;
+    margin:20px auto;
+    padding:0 20px;
+}
   .location-photo{
     width:100%;
     margin:24px auto 10px;
@@ -543,9 +552,11 @@ body {
             </h1>
 
             <div class="slide-content">
+              <div class="confirmation-note">
+                  confirm your attendance before October 1, 2026.
+              </div>
 
               <div class="form-intro-wrapper">
-                Please confirm your attendance
 
                 <dd class="npersons_cont npLabel_visible">
                   Number of persons:
@@ -790,22 +801,22 @@ document.addEventListener("DOMContentLoaded",function(){
         return;
       }
 
-      let text="Wedding RSVP - Akram & Theresa-Belle\\n\\n";
-      text+="Name: "+guestName+"\\n";
+      let text="Wedding RSVP - Akram & Theresa-Belle";
+      text+="Name: "+guestName;
 
       if(attendance==="1"){
-        text+="Attendance: Yes Attending\\n";
-        text+="Number of attendees: "+persons+"\\n";
+        text+="Attendance: Yes Attending";
+        text+="Number of attendees: "+persons;
       }else{
-        text+="Attendance: Not Attending\\n";
+        text+="Attendance: Not Attending";
       }
 
       if(msg){
-        text+="\\nMessage: "+msg;
+        text+="Message: "+msg;
       }
 
       const whatsapp=
-        "https://wa.me/96171061377?text="+encodeURIComponent(text);
+        "https://wa.me/96181793399?text="+encodeURIComponent(text);
 
       window.open(whatsapp,"_blank");
     });
