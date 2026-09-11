@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Invitation Link Generator</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --paper:#FFFDF9;
+  --cream:#f7f1e9;
+  --accent:#98431D;
+  --ink:#4C4740;
+  --muted:#7e7369;
+  --line:#d9c9b7;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--cream);color:var(--ink)}
+body{
+  font-family:"DM Sans",sans-serif;
+  padding:28px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.generator{
+  width:min(100%,560px);
+  background:var(--paper);
+  border:1px solid var(--line);
+  padding:34px 28px;
+  box-shadow:0 18px 50px rgba(76,71,64,.08);
+}
+.eyebrow{
+  text-align:center;
+  text-transform:uppercase;
+  letter-spacing:.22em;
+  font-size:10px;
+  color:var(--muted);
+}
+h1{
+  margin:10px 0 8px;
+  text-align:center;
+  color:var(--accent);
+  font-family:"Cormorant Garamond",serif;
+  font-size:40px;
+  font-weight:500;
+}
+.note{
+  margin:0 auto 28px;
+  max-width:420px;
+  text-align:center;
+  color:var(--muted);
+  font-family:"Cormorant Garamond",serif;
+  font-size:18px;
+  line-height:1.45;
+}
+.field{margin-top:18px}
+label{
+  display:block;
+  margin-bottom:7px;
+  font-size:13px;
+  color:var(--muted);
+}
+input,select{
+  width:100%;
+  height:48px;
+  padding:0 13px;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--ink);
+  font:inherit;
+  outline:none;
+}
+input:focus,select:focus{border-color:var(--accent)}
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:22px;
+}
+button{
+  min-height:46px;
+  border:1px solid var(--accent);
+  cursor:pointer;
+  font:inherit;
+}
+.generate{
+  background:var(--accent);
+  color:#fff;
+}
+.copy{
+  background:transparent;
+  color:var(--accent);
+}
+.result-wrap{
+  display:none;
+  margin-top:24px;
+  padding-top:22px;
+  border-top:1px solid var(--line);
+}
+.result-wrap.show{display:block}
+.result{
+  width:100%;
+  min-height:92px;
+  padding:12px;
+  resize:none;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--ink);
+  font-family:monospace;
+  font-size:12px;
+  line-height:1.5;
+}
+.preview{
+  display:inline-block;
+  margin-top:12px;
+  color:var(--accent);
+  font-family:"Cormorant Garamond",serif;
+  font-size:18px;
+}
+.status{
+  min-height:20px;
+  margin-top:10px;
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
+}
+@media(max-width:520px){
+  .generator{padding:28px 20px}
+  .actions{grid-template-columns:1fr}
+  h1{font-size:34px}
+}
+</style>
+</head>
+
+<body>
+<main class="generator">
+  <div class="eyebrow">Akram &amp; Theresa-Belle</div>
+  <h1>Invitation Link Generator</h1>
+  <p class="note">Enter the guest name and the maximum number of invited persons.</p>
+
+  <div class="field">
+    <label for="guestName">Guest name</label>
+    <input id="guestName" type="text" placeholder="e.g. Theresa" autocomplete="off">
+  </div>
+
+  <div class="field">
+    <label for="guestCount">Number of persons</label>
+    <select id="guestCount">
+      <option value="1">1 person</option>
+      <option value="2">2 persons</option>
+      <option value="3">3 persons</option>
+      <option value="4">4 persons</option>
+      <option value="5">5 persons</option>
+      <option value="6">6 persons</option>
+      <option value="7">7 persons</option>
+      <option value="8">8 persons</option>
+      <option value="9">9 persons</option>
+      <option value="10">10 persons</option>
+    </select>
+  </div>
+
+  <div class="actions">
+    <button class="generate" id="generateBtn" type="button">Generate Link</button>
+    <button class="copy" id="copyBtn" type="button">Copy Link</button>
+  </div>
+
+  <div class="result-wrap" id="resultWrap">
+    <textarea class="result" id="result" readonly></textarea>
+    <a class="preview" id="preview" href="#" target="_blank" rel="noopener">Open invitation ↗</a>
+  </div>
+
+  <div class="status" id="status"></div>
+</main>
+
+<script>
+function utf8ToBase64Url(text){
+  const bytes = new TextEncoder().encode(text);
+  let binary = "";
+
+  for(let i=0;i<bytes.length;i++){
+    binary += String.fromCharCode(bytes[i]);
+  }
+
+  return btoa(binary)
+    .replace(/\+/g,"-")
+    .replace(/\//g,"_")
+    .replace(/=+$/,"");
+}
+
+function invitationBaseUrl(){
+  // generator.html and index.html are expected to be in the same folder.
+  const url = new URL(window.location.href);
+  url.search = "";
+  url.hash = "";
+  url.pathname = url.pathname.replace(/[^/]*$/, "index.html");
+  return url.toString();
+}
+
+function makeLink(){
+  const name = document.getElementById("guestName").value.trim();
+  const guests = parseInt(document.getElementById("guestCount").value,10);
+
+  if(!name){
+    document.getElementById("status").textContent = "Please enter the guest name.";
+    document.getElementById("guestName").focus();
+    return "";
+  }
+
+  const token = utf8ToBase64Url(
+    JSON.stringify({
+      name:name,
+      guests:guests
+    })
+  );
+
+  return invitationBaseUrl() + "?invite=" + token;
+}
+
+document.getElementById("generateBtn").addEventListener("click",function(){
+  const link = makeLink();
+
+  if(!link) return;
+
+  const result = document.getElementById("result");
+  result.value = link;
+
+  document.getElementById("preview").href = link;
+  document.getElementById("resultWrap").classList.add("show");
+  document.getElementById("status").textContent = "Link generated.";
+});
+
+document.getElementById("copyBtn").addEventListener("click",async function(){
+  let link = document.getElementById("result").value;
+
+  if(!link){
+    link = makeLink();
+    if(!link) return;
+
+    document.getElementById("result").value = link;
+    document.getElementById("preview").href = link;
+    document.getElementById("resultWrap").classList.add("show");
+  }
+
+  try{
+    await navigator.clipboard.writeText(link);
+    document.getElementById("status").textContent = "Link copied.";
+  }catch(error){
+    const result = document.getElementById("result");
+    result.focus();
+    result.select();
+    document.execCommand("copy");
+    document.getElementById("status").textContent = "Link copied.";
+  }
+});
+</script>
+</body>
+</html>
